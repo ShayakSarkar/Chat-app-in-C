@@ -1,0 +1,6 @@
+Info regarding the actual important files in the project
+
+server.c
+server.out
+client.c
+client.out

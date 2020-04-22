@@ -37,7 +37,7 @@ void pq_destroy(struct pyqueue* ptr){
 	}
 	free(ptr);
 }
-struct node* node_init(char* type,void* data){
+static struct node* node_init(char* type,void* data){
 	struct node* ptr=(struct node*)malloc(sizeof(struct node));
 	ptr->type=type;
 	ptr->data=data;	
@@ -100,6 +100,7 @@ void* pq_peek(struct pyqueue* pq,char* return_type){
 	return pq->tail->data;
 }
 
+/*
 int main(){
 	struct pyqueue* pq=(struct pyqueue*)malloc(sizeof(struct pyqueue));
 	pq_init(pq);
@@ -124,4 +125,4 @@ int main(){
 	free(ret_val2);
 	pq_destroy(pq);
 }
-
+*/

@@ -1,25 +1,34 @@
 #include "unp.h"
 #include <pthread.h>
+#include "graphics/cui.h"
 
 void* client_console_input(void* args){
 	printf("Console Input thread spawned\n");
 	int sockfd=((int*)args)[0];
 	printf("Client action has been called\n");
 	char* buf=(char*)malloc(sizeof(char)*BUFF_LEN);
+	memset(buf,'\0',BUFF_LEN);
 	while(1){
-		printf("Enter your message: \n");
+		for(int i=0;i<BUFF_LEN && buf[i]!='\0';i++){
+			buf[i]='\0';
+		}
+		//printf("Enter your message: \n");
 		fgets(buf,BUFF_LEN,stdin);
-		writen(sockfd,buf,strlen(buf));
+		if(strlen(buf)>1){
+			writen(sockfd,buf,strlen(buf));
+		}
 	}
 }
 void* client_console_output(void* args){
 	printf("Console Output thread spawned\n");
 	int sockfd=((int*)args)[0];
-	char* buf=(char*)malloc(sizeof(char)*BUFF_LEN);
+	struct send_recv_info* info=(struct send_recv_info*)malloc(sizeof(struct send_recv_info));
+	prepare_screen();
 	while(1){
-		int b_read=read(sockfd,buf,BUFF_LEN);
-		fwrite(buf,1,b_read,stdout);
-		printf("\n");
+		int b_read=read(sockfd,info,sizeof(struct send_recv_info));
+		//printf("messsage in structure: %s\n",info->msg);
+		render_msg(info);
+		//printf("\n");
 	}
 }
 void client_action(int sockfd){
@@ -33,7 +42,7 @@ void client_action(int sockfd){
 int main(int argc,char** argv){
 	struct sockaddr_in servaddr;
 	const char* ipaddr=NULL;
-	if(argc<2){
+	if(argc<3){
 		ipaddr="127.0.0.1";
 	}
 	else{
@@ -56,6 +65,6 @@ int main(int argc,char** argv){
 		perror(NULL);
 		return errno;
 	}
-
+	write(sockfd,argv[1],20);
 	client_action(sockfd);
 }

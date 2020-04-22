@@ -3,18 +3,37 @@
 #include "graphics/cui.h"
 
 void* client_console_input(void* args){
-	printf("Console Input thread spawned\n");
 	int sockfd=((int*)args)[0];
-	printf("Client action has been called\n");
 	char* buf=(char*)malloc(sizeof(char)*BUFF_LEN);
+
+	printf("Console Input thread spawned\n");
+	printf("Client action has been called\n");
 	memset(buf,'\0',BUFF_LEN);
 	while(1){
+
+		char* notEOF=NULL; 	// Used to identify if 
+	       				// Ctrl+D has been pressed 
+					// by the client. If Ctrl+D 
+					// is pressed, notEOF remains
+					// NULLL	
 		for(int i=0;i<BUFF_LEN && buf[i]!='\0';i++){
+			//Reinitialise the buffer with null values
+			//to avoid possibility of errors
+			//Inefficient step, should find a better way
 			buf[i]='\0';
 		}
 		//printf("Enter your message: \n");
-		fgets(buf,BUFF_LEN,stdin);
+		notEOF=fgets(buf,BUFF_LEN,stdin);
+
+		// If Ctrl+D is pressed, notEOF is NULL
+		// and it means the client wants to return 
+		if(notEOF==NULL){
+			exit(0);
+		}
 		if(strlen(buf)>1){
+			//Ensures that the message has some valid
+			//body and is not an empty message
+
 			writen(sockfd,buf,strlen(buf));
 		}
 	}

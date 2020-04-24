@@ -26,9 +26,13 @@ void pq_init(struct pyqueue* pq){
 	pq->len=0;
 }
 static void nd_destroy(struct node* ptr){
+
+	//destroy the node
 	free(ptr);
 }
 void pq_destroy(struct pyqueue* ptr){
+	
+	//Destructor for the pyqueue
 	struct node* temp=ptr->tail;
 	while(temp!=NULL){
 		struct node* temp2=temp;
@@ -38,6 +42,11 @@ void pq_destroy(struct pyqueue* ptr){
 	free(ptr);
 }
 static struct node* node_init(char* type,void* data){
+
+	//Constructor for the node. It returns a new node
+	//setting the internal data of the node as per the 
+	//parameters that have been provided
+
 	struct node* ptr=(struct node*)malloc(sizeof(struct node));
 	ptr->type=type;
 	ptr->data=data;	
@@ -46,6 +55,14 @@ static struct node* node_init(char* type,void* data){
 	return ptr;
 }
 void pq_enqueue(struct pyqueue* pq,char* type,void* elm){
+	
+	//Adds an element at the end of the queue. pq is the pointer 
+	//to the queue to which the element must be added.
+	//type is the data type of the supplied element. This is added 
+	//to allow for easy deferencing by the user later on.
+	//elm is the pointer to the actual data that is to be stored 
+	//in the pyqueue
+	
 	//printf("New element to be enqueued: %d\n",*((int*)elm));
 	struct node* new_node=node_init(type,elm);
 	if(pq->len==0){
@@ -61,6 +78,13 @@ void pq_enqueue(struct pyqueue* pq,char* type,void* elm){
 }
 
 void* pq_dequeue(struct pyqueue* pq,char* return_type){
+
+	//Removes an element from the front of the queue. 
+	//return_type specifies whether the data returned by
+	//the queue is a pointer to the node or the data 
+	//within the node. return_type is either 'data' or 
+	//'node'.
+
 	if(strcmp(return_type,"node")!=0 && strcmp(return_type,"data")!=0){
 		fprintf(stderr,"Invalid return type requested\n");
 		return NULL;
@@ -85,6 +109,10 @@ void* pq_dequeue(struct pyqueue* pq,char* return_type){
 }	
 
 void* pq_peek(struct pyqueue* pq,char* return_type){
+
+	//Returns the element at the front of the queue
+	//This can be either the node, or the data contained
+	//within the node. return_type is either 'node' or 'data'
 
 	if(strcmp(return_type,"node")!=0 && strcmp(return_type,"data")!=0){
 		fprintf(stderr,"Invalid data type\n");

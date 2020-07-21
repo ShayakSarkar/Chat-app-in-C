@@ -128,6 +128,8 @@ void* pq_peek(struct pyqueue* pq,char* return_type){
 	return pq->tail->data;
 }
 
+//The main function is to be used only for testing purposes
+
 /*
 int main(){
 	struct pyqueue* pq=(struct pyqueue*)malloc(sizeof(struct pyqueue));
